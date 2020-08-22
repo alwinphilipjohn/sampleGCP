@@ -11,6 +11,14 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "http-proxy": "^1.18.1",
+    "http-proxy-agent": "^4.0.1",
+    "ipware": "^2.0.0",
+    "node-fetch": "^2.6.0",
+    "node-fetch-with-proxy": "^0.1.2",
+    "node-geocoder": "^3.27.0",
+    "url": "^0.11.0"
   }
 }
