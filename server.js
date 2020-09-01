@@ -15,6 +15,15 @@ app.use(express.json());
 
 
 /*
+   getting a default home page.
+*/
+
+app.get('/',(req,res) => {
+    res.sendFile(__dirname+"/login.html")
+})
+
+
+/*
    defining permission for the cross orgin requests
 */
 
