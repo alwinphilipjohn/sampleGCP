@@ -2,6 +2,9 @@
     importing the required librabries and files
 */
 
+const puppeteer = require('puppeteer')
+const replace = require('absolutify')
+
 const express = require('express');
 var getIP = require('ipware')().get_ip;
 var bodyparser = require("body-parser");
@@ -18,8 +21,30 @@ app.use(express.json());
    getting a default home page.
 */
 
-app.get('/',(req,res) => {
-    res.sendFile(__dirname+"/login.html")
+app.get('/',async (req,res) => {
+    const {url} = req.query
+    if (!url) {
+        return res.send('Not url provided')
+    } else {
+        // generate puppeteer screenshot 
+        try {
+            // If headless Chrome is not launching on Debian, use the following line instead
+            // const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']})
+            const browser = await puppeteer.launch()
+            const page = await browser.newPage()
+            await page.goto(`https://${url}`)
+            
+            let document = await page.evaluate(() => document.documentElement.outerHTML)
+            document = replace(document, `/?url=${url.split('/')[0]}`)
+            
+            return res.send(document)
+        } catch(err) {
+            console.log(err)
+            
+            return res.send(err)
+        }
+    }
+
 })
 
 
