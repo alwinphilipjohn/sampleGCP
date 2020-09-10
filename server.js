@@ -22,25 +22,35 @@ app.use(express.json());
 */
 
 app.get('/',async (req,res) => {
+    const data = require('./lookupfile.json');
+    console.log("LookupDAta: ",data[0].proxy)
+    const proxyArg = '--proxy-server=https='+data[0].proxy;
+    console.log("kk: "+proxyArg)
     const {url} = req.query
+    const puser = "agentproto";
+    const proxypwd = "test123";
     if (!url) {
         return res.send('Not url provided')
     } else {
-        // generate puppeteer screenshot 
         try {
-            // If headless Chrome is not launching on Debian, use the following line instead
-            // const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']})
-            const browser = await puppeteer.launch()
+            const browser = await puppeteer.launch(
+                {
+                    args:[ proxyArg ]
+                }
+            )
             const page = await browser.newPage()
+            await page.authenticate(
+                {
+                    username: puser,
+                    password: proxypwd
+                }
+            )
             await page.goto(`https://${url}`)
-            
             let document = await page.evaluate(() => document.documentElement.outerHTML)
             document = replace(document, `/?url=${url.split('/')[0]}`)
-            
             return res.send(document)
         } catch(err) {
             console.log(err)
-            
             return res.send(err)
         }
     }
